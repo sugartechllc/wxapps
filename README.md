@@ -1,2 +1,2 @@
 # wxapps
-Simple apps for weather data analysis
+Simple apps for weather data analysis.
