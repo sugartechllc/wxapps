@@ -52,6 +52,24 @@ The json in each input file is expected to have at least the following elements:
             print('Error in date "' + s + '", use format YYYY-M-D')
             exit(1)
 
+class OneDay:
+  def __init__(self, file_path):
+    self.file_path = file_path
+    self.n_records = 0
+
+    tpg_data = json.loads(open(file_path).read())
+    print(tpg_data['features'][0]['properties']['measurements_in_feature'])
+    self.n_records = len(tpg_data['features'][0]['properties']['data'])
+    self.begin_time = tpg_data['features'][0]['properties']['data'][0]['time']
+    self.end_time = tpg_data['features'][0]['properties']['data'][-1]['time']
+    self.first_precip = tpg_data['features'][0]['properties']['data'][0]['measurements']['precip']
+    self.last_precip = tpg_data['features'][0]['properties']['data'][-1]['measurements']['precip']
+    self.daily_precip = self.last_precip - self.first_precip
+
+  def info(self):
+    print(self.file_path)
+    print(self.daily_precip, self.n_records, self.begin_time, self.end_time)
+
 def find_files(dir, pattern):
   files = glob.glob(dir+pattern)
   return files
@@ -67,4 +85,8 @@ if __name__ == '__main__':
       print('No input files which match ' + options['dir']+options['pattern'])
       sys.exit(1)
 
-    print(data_files)
+    for data_file in data_files:
+      print('----------------------------------------')
+      print(data_file)
+      one_day_file = OneDay(file_path=data_file)
+      one_day_file.info()
